@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Audio sample</title>
+  <style>
+  #custom_volume {
+    transform: rotate(270deg);
+    width: 50px;
+  }
+  </style>
+</head>
+<body>
+  <audio
+    id="audio"
+    src="https://www.w3cschool.cn/statics/demosource/horse.mp3"
+    autoplay
+    controls
+    loop
+    preload="auto">
+  </audio>
+
+  <div class="custom-audio">
+    <button id="custom_control">播放</button>
+    <span id="current_time">0:00</span>
+    <span>/</span>
+    <span id="total_time"></span>
+    <input id="custom_progress" step="any" min="0" type="range" value="0">
+    <button id="open_close_volume">打开/关闭声音</button>
+    <input id="custom_volume" step="any" min="0" max="1" type="range" value="1">
+  </div>
+  
+  <script>
+    const audio = document.getElementById('audio')
+    const control = document.getElementById('custom_control')
+    const currentTime = document.getElementById('current_time')
+    const totalTime = document.getElementById('total_time')
+    const progress = document.getElementById('custom_progress')
+    const volume = document.getElementById('custom_volume')
+    const closeOrOpenVolume = document.getElementById('open_close_volume')
+
+    function controlPlay() {
+      if (audio.paused) {
+        audio.play()
+        control.innerText = '暂停'
+      } else {
+        audio.pause()
+        control.innerText = '播放 '
+      }
+    }
+
+    function controlVolume() {
+      audio.muted = !audio.muted
+    }
+
+    control.addEventListener('click', controlPlay)
+
+    closeOrOpenVolume.addEventListener('click', controlVolume)
+
+    audio.addEventListener('loadstart', () => {
+      console.log('音频开始加载')
+    })
+
+    audio.addEventListener('durationchange', (e) => {
+      console.log('获取到音频总时间')
+      const duration = e.target.duration < 10
+        ? '0' + parseInt(e.target.duration)
+        : parseInt(e.target.duration)
+
+      totalTime.innerText = `0:${duration}`
+      custom_progress.max = duration
+    })
+
+    audio.addEventListener('timeupdate', e => {
+      const time = e.target.currentTime < 10
+        ? '0' + parseInt(e.target.currentTime)
+        : parseInt(e.target.currentTime)
+
+      currentTime.innerText = `0:${time}`
+      progress.value = e.target.currentTime
+    })
+
+    progress.addEventListener('change', e => {
+      audio.currentTime = e.target.value
+      audio.play()
+    })
+
+    progress.addEventListener('input', e => {
+      audio.pause()
+      audio.currentTime = e.target.value
+    })
+
+    volume.addEventListener('change', e => {
+      audio.volume = parseFloat(parseFloat(e.target.value).toFixed(1))
+    })
+
+    volume.addEventListener('input', e => {
+      audio.volume = parseFloat(parseFloat(e.target.value).toFixed(1))
+    })
+  
+  </script>
+</body>
+</html>
