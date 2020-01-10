@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>geoLocation sample</title>
+</head>
+<body>
+  <button id="findLocation">Show my Location</button>
+  <button id="watchLocation">Watch my Location</button>
+  <p id="status"></p>
+  <a id="map-link" target="_blank"></a>
+
+  <script>
+    document.getElementById('findLocation').addEventListener('click', geoFindMe)
+    document.getElementById('watchLocation').addEventListener('click', () => geoFindMe(true))
+
+    function geoFindMe (watch) {
+      const status = document.getElementById('status')
+      const link = document.getElementById('map-link')
+
+      function success (position) {
+        const latitude = position.coords.latitude
+        const longitude = position.coords.longitude
+        
+        status.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`
+        link.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`
+        link.textContent = 'Your position in map'
+      }
+
+      function error () {
+        status.textContent = 'Unable to receive your location'
+      }
+
+      if (!navigator.geolocation) {
+        status.textContent = 'GeoLocation is not supported by your browser'
+      } else {
+        status.textContent = 'Locating...'
+        if (watch) {
+          navigator.geolocation.watchPosition(success, error)
+        } else {
+          navigator.geolocation.getCurrentPosition(success, error)
+        }
+      }
+    }
+  </script>
+</body>
+</html>
