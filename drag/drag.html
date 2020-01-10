@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Drag sample</title>
+  <style>
+  div {
+    display: inline-block;
+    margin: 0 50px;
+    width: 200px;
+    height: 500px;
+    text-align: center;
+    color: #333;
+  }
+  li {
+    padding: 10px;
+    margin: 10px 0;
+    list-style-type: none;
+    cursor: pointer;
+    background: rgba(255, 255, 255, .5);
+  }
+  .wrapper {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+  }
+  .enter {
+    outline: 2px dashed red;
+  }
+  #plan {
+    background: #FB7D44;
+  }
+  #todo {
+    background: #2A92BF;
+  }
+  #done {
+    background: #00B961;
+  }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div id="plan" class="container">
+      <h2>plan</h2>
+      <li draggable="true">HTML</li>
+      <li draggable="true">CSS</li>
+      <li draggable="true">Javascript</li>
+      <li draggable="true">Vue</li>
+      <li draggable="true">React</li>
+      <li draggable="true">Angular</li>
+    </div>
+    <div id="todo" class="container">
+      <h2>todo</h2>
+    </div>
+    <div id="done" class="container">
+      <h2>done</h2>
+    </div>
+  </div>
+
+  <script>
+    const moveItems = Array.from(document.getElementsByTagName('li'))
+
+    moveItems.map(item => {
+      item.setAttribute('id', item.innerText)
+      item.ondragstart = e => e.dataTransfer.setData('id', item.id)
+    })
+
+    Array.from(document.getElementsByClassName('container')).forEach(con => {
+      con.ondragover = e => e.preventDefault()
+      con.ondragenter = e => e.target.classList.add('enter')
+      con.ondragleave = e => e.target.classList.remove('enter')
+
+      con.ondrop = e => {
+        e.preventDefault()
+        const _this = e.target
+        const id = e.dataTransfer.getData('id')
+        const elem = document.getElementById(id)
+        const toElem = e.target.id
+
+        e.target.classList.remove('enter')
+
+        if (toElem === 'plan' || toElem === 'todo' || toElem === 'done') {
+          _this.appendChild(elem)
+        } else {
+          _this.parentNode.insertBefore(elem, document.getElementById(toElem))
+        }
+      }
+    })
+  </script>
+</body>
+</html>
