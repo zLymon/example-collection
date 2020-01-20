@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>IndexDB</title>
+</head>
+<body>
+  <script>
+    const request = window.indexedDB.open('test')
+
+    request.onupgradeneeded = e => {
+      console.log('数据库创建or更新')
+      console.log(e)
+
+      // 只能在这个回调函数里创建存储空间
+      const db = e.target.result
+
+      const store = db.createObjectStore('table1', { keyPath: 'id', autoIncrement: true })
+
+      store.createIndex('name', 'name', { unique: false })
+    }
+
+    request.onsuccess = e => {
+      console.log('数据库连接成功')
+      console.log(e)
+
+      const db = e.target.result
+      
+      const transaction = db.transaction(['table1'], 'readwrite')
+
+      const store = transaction.objectStore('table1')
+      const index = store.index('name')
+
+      store.add({ name: 'a', age: 10 })
+      store.add({ name: 'b', age: 20 })
+    }
+
+    request.onerror = e => {
+      console.log('数据库连接失败')
+    }
+  </script>
+</body>
+</html>
