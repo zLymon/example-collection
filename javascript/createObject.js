@@ -1,5 +1,6 @@
 // 创建对象的多种方法
 // 工厂模式
+// 缺点：无法解决对象识别问题，即不知道一个对象的类型
 function createPerson (name, age, job) {
   var o = new Object()
   o.name = name
@@ -14,6 +15,7 @@ function createPerson (name, age, job) {
 var person1 = createPerson('Nicholas', 29, 'software engineer')
 
 // 构造函数模式
+// 缺点：构造函数模式创建对象，每个方法需要在每个实例上重新创建一次
 function Person (name, age, job) {
   this.name = name
   this.age = age
@@ -25,6 +27,7 @@ function Person (name, age, job) {
 var person2 = new Person('Nicholas', 29, 'software engineer')
 
 // 原型模式
+// 缺点：所有的属性都将被共享，引用类型值如果修改了，所有对象都会被修改
 function Person1 () {}
 
 Person.prototype.name = 'Nicholas'
@@ -37,6 +40,7 @@ Person.prototype.sayName = function () {
 var person2 = new Person1()
 
 // 组合使用构造函数模式和原型模式
+// 使用最广泛、认同度最高的创建对象的方法
 function Person2 (name, age, job) {
   this.name = name
   this.age = age
